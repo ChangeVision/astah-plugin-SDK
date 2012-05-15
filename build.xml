@@ -156,6 +156,10 @@
       <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-example-plugin.git"/>
       <param name="checkoutDir" value="${distbase}/examples/tutorialsample"/>
     </antcall>
+    <antcall target="checkout">
+      <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-drag_and_drop_example-plugin.git"/>
+      <param name="checkoutDir" value="${distbase}/examples/drag_and_drop_sample"/>
+    </antcall>
   </target>
 
   <target name="make_tutorials" description="create tutorials html">
