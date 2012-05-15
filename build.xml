@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="astah* plug-in SDK" default="make_zip">
+
+  <property name="target" location="target"/>
+  <property name="maven-binaries" location="maven-binary"/>
+  <property name="maven-dir-name" value="apache-maven-3.0.3"/>
+  <property name="based-maven-binaries" location="${maven-binaries}/${maven-dir-name}-bin.zip"/>
+  <property name="artifact-name" value="astah-plugin-SDK"/>
+  <property name="version" value="1.0"/>
+  <property name="complete-name" value="${artifact-name}-${version}"/>
+  <property name="distbase" value="${target}/${complete-name}"/>
+  <property name="bundles" location="${distbase}/bundles"/>
+  <tstamp>
+    <format property="now" pattern="yyyyMMddHHmmss" />
+  </tstamp>
+  <!-- Mavenの実行形式ファイル(Windowsのみバッチ) -->
+  <condition property="mvn.executable" value="mvn.bat">
+    <os family="windows"/>
+  </condition>
+  <condition property="mvn.executable" value="mvn">
+    <os family="unix"/>
+  </condition>
+
+  <target name="clean">
+     <delete dir="${target}"/>
+  </target>
+
+  <target name="make_zip" depends="clean" description="create astah* SDK zip">
+    <echo>start making zip</echo>
+    <mkdir dir="${target}" />
+    <antcall target="get_maven"/>
+    <move file="${target}/${maven-dir-name}" tofile="${distbase}"/>
+    <move file="${distbase}/README.txt" tofile="${distbase}/MAVEN_README.txt"/>
+    <delete>
+      <fileset dir="${distbase}/bin">
+        <include name="mvn*"/>
+      </fileset>
+    </delete>
+    <antcall target="copy_resource">
+      <param name="dirname" value="bin"/>
+    </antcall>
+    <antcall target="copy_resource">
+      <param name="dirname" value="conf"/>
+    </antcall>
+    <antcall target="make_repository">
+      <param name="dirname" value="repository"/>
+    </antcall>
+    <antcall target="make_bundle_plugins"/>
+    <antcall target="make_tutorials"/>
+    <antcall target="make_example"/>
+    <antcall target="get_javadoc"/>
+    <echo file="${distbase}/CREATED" message="BUILD:${now}"/>
+    <fixcrlf srcdir="${distbase}/bin" eol="lf"/>
+    <fixcrlf srcdir="${distbase}/bin" includes="**/*.bat" eol="crlf"/>
+    <antcall target="chmod">
+      <param name="target" value="${distbase}/bin/*"/>
+      <param name="perm" value="766"/>
+    </antcall>
+    <antcall target="chmod">
+      <param name="target" value="${distbase}/bin/*.bat"/>
+      <param name="perm" value="666"/>
+    </antcall>
+    <antcall target="chmod">
+      <param name="target" value="${distbase}/bin/*.conf"/>
+      <param name="perm" value="666"/>
+    </antcall>
+    <antcall target="create_zip"/>
+    <echo>end making zip</echo>
+  </target>
+
+  <target name="get_maven">
+    <get src="http://astah.change-vision.com/files/plugin/apache-maven-3.0.3-bin.zip" dest="maven-binary" skipexisting="true"/>
+    <unzip src="${based-maven-binaries}" dest="${target}"/>
+  </target>
+
+  <target name="get_javadoc">
+    <get src="http://members.change-vision.com/javadoc/astah-api/latest/javadoc.zip" dest="target/javadoc.zip" skipexisting="true"/>
+    <unzip src="target/javadoc.zip" dest="javadoc"/>
+  </target>
+
+  <target name="create_zip">
+    <exec executable="zip" dir="${target}" osfamily="unix">
+      <arg value="-r"/>
+      <arg value="${distbase}.zip"/>
+      <arg value="${complete-name}"/>
+    </exec>
+    <exec executable="buildtools/zip.exe" dir="${target}" osfamily="windows">
+      <arg value="-r"/>
+      <arg value="${distbase}.zip"/>
+      <arg value="${complete-name}"/>
+    </exec>
+  </target>
+
+  <target name="make_repository">
+    <delete dir="${java.io.tmpdir}/${artifact-name}/repository"/>
+    <antcall target="checkout">
+      <param name="connectionUrl" value="scm:git:https://github.com/ChangeVision/astah-maven-plugin.git"/>
+      <param name="checkoutDir" value="${target}/astah-maven-plugin"/>
+    </antcall>
+    <antcall target="build_plugin">
+      <param name="working_dir" value="${target}/astah-maven-plugin"/>
+    </antcall>
+    <antcall target="checkout">
+      <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-plugin-archetype-plugin.git"/>
+      <param name="checkoutDir" value="${target}/archetype"/>
+    </antcall>
+    <antcall target="build_plugin">
+      <param name="working_dir" value="${target}/archetype"/>
+    </antcall>
+    <antcall target="copy_specific_resource">
+      <param name="distdirname" value="repository"/>
+      <param name="srcdirname" value="${java.io.tmpdir}/${artifact-name}/repository"/>
+    </antcall>
+    <copy todir="${distbase}/" overwrite="true">
+      <fileset dir="doc">
+        <include name="*.asta"/>
+      </fileset>
+    </copy>
+    <antcall target="copy_resource">
+      <param name="dirname" value="repository"/>
+    </antcall>
+  </target>
+
+  <target name="make_bundle_plugins" description="build bundle plugins for developer">
+    <mkdir dir="${bundles}"/>
+    <antcall target="build_bundle_plugin">
+      <param name="plugin_name" value="astah-console-plugin.git"/>
+      <param name="working_dir" value="${target}/astah-console-plugin.git"/>
+    </antcall>
+  </target>
+
+  <target name="build_bundle_plugin">
+    <antcall target="checkout">
+      <param name="connectionUrl" value="scm:git:https://github.com/ChangeVision/astah-console-plugin.git/"/>
+      <param name="checkoutDir" value="${target}/${plugin_name}"/>
+    </antcall>
+    <antcall target="mvn">
+      <param name="argLine" value=" package"/>
+      <param name="working_dir" value="${working_dir}"/>
+    </antcall>
+    <copy todir="${bundles}">
+      <fileset dir="${working_dir}/target/" includes="*.jar"/>
+    </copy>
+  </target>
+
+  <target name="build_plugin">
+    <antcall target="mvn">
+      <param name="argLine" value=" deploy -DaltDeploymentRepository=local::default::file://${java.io.tmpdir}/astah-plugin-SDK/repository"/>
+      <param name="working_dir" value="${working_dir}"/>
+    </antcall>
+  </target>
+
+  <target name="make_example">
+    <mkdir dir="${distbase}/examples" />
+    <antcall target="checkout">
+      <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-example-plugin.git"/>
+      <param name="checkoutDir" value="${distbase}/examples/tutorialsample"/>
+    </antcall>
+  </target>
+
+  <target name="make_tutorials" description="create tutorials html">
+    <antcall target="make_tutorial">
+      <param name="lang" value="ja"/>
+    </antcall>
+    <antcall target="make_tutorial">
+      <param name="lang" value="en"/>
+    </antcall>
+  </target>
+
+  <target name="make_tutorial">
+    <antcall target="checkout">
+      <param name="connectionUrl" value="scm:git:https://github.com/ChangeVision/astah-plugin-tutorial-${lang}.git/"/>
+      <param name="checkoutDir" value="target/tutorial-${lang}"/>
+    </antcall>
+    <antcall target="run_sphinx">
+      <param name="working_dir" value="target/tutorial-${lang}" />
+      <param name="command" value="html" />
+    </antcall>
+    <antcall target="copy_specific_resource">
+      <param name="srcdirname" value="target/tutorial-${lang}/build/html"/>
+      <param name="distdirname" value="tutorial/${lang}"/>
+    </antcall>
+  </target>
+
+  <target name="run_sphinx">
+    <antcall target="run_sphinx_unix">
+      <param name="working_dir" value="${working_dir}"/>
+      <param name="command" value="${command}"/>
+    </antcall>
+    <antcall target="run_sphinx_windows">
+      <param name="working_dir" value="${working_dir}"/>
+      <param name="command" value="${command}" />
+    </antcall>
+  </target>
+
+  <target name="run_sphinx_unix">
+    <exec executable="make" dir="${working_dir}" osfamily="unix">
+      <arg value="clean"/>
+    </exec>
+    <exec executable="make" dir="${working_dir}" osfamily="unix">
+      <arg value="${command}"/>
+    </exec>
+  </target>
+
+  <target name="run_sphinx_windows">
+    <exec executable="cmd" dir="${working_dir}" osfamily="windows">
+      <arg value="/c"/>
+      <arg value="make.bat"/>
+      <arg value="clean"/>
+    </exec>
+    <exec executable="cmd" dir="${working_dir}" osfamily="windows">
+      <arg value="/c"/>
+      <arg value="make.bat"/>
+      <arg value="html"/>
+    </exec>
+  </target>
+
+  <target name="chmod">
+      <chmod file="${target}" perm="${perm}" type="both" verbose="true"/>
+  </target>
+
+  <target name="checkout">
+    <antcall target="mvn">
+      <param name="argLine" value=" scm:checkout -DconnectionUrl=${connectionUrl} -DcheckoutDirectory=${checkoutDir}"/>
+      <param name="working_dir" value="."/>
+    </antcall>
+  </target>
+
+  <target name="mvn">
+    <exec failonerror="true" executable="${mvn.executable}" dir="${working_dir}">
+      <arg line="${argLine}"/>
+    </exec>
+  </target>
+
+  <target name="copy_resource">
+    <antcall target="copy_specific_resource">
+      <param name="srcdirname" value="${dirname}"/>
+      <param name="distdirname" value="${dirname}"/>
+    </antcall>
+  </target>
+
+  <target name="copy_specific_resource">
+    <copy todir="${distbase}/${distdirname}" overwrite="true">
+      <fileset dir="${srcdirname}">
+        <include name="**/**"/>
+      </fileset>
+    </copy>
+  </target>
+</project>
