@@ -69,7 +69,7 @@
   </target>
 
   <target name="get_maven">
-    <get src="http://astah.change-vision.com/files/plugin/apache-maven-3.0.3-bin.zip" dest="maven-binary" skipexisting="true"/>
+    <get src="http://archive.apache.org/dist/maven/binaries/apache-maven-3.0.3-bin.zip" dest="maven-binary" skipexisting="true"/>
     <unzip src="${based-maven-binaries}" dest="${target}"/>
   </target>
 
