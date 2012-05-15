@@ -75,7 +75,7 @@
 
   <target name="get_javadoc">
     <get src="http://members.change-vision.com/javadoc/astah-api/latest/javadoc.zip" dest="target/javadoc.zip" skipexisting="true"/>
-    <unzip src="target/javadoc.zip" dest="javadoc"/>
+    <unzip src="target/javadoc.zip" dest="${distbase}/javadoc"/>
   </target>
 
   <target name="create_zip">
