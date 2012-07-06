@@ -1,0 +1,21 @@
+#!/bin/sh
+# resolve links - $0 may be a softlink
+PRG="$0"
+
+while [ -h "$PRG" ]; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+
+# Get standard environment variables
+PRGDIR=`dirname "$PRG"`
+[ -z "$ASDK_HOME" ] && ASDK_HOME=`cd "$PRGDIR/.." >/dev/null; pwd`
+if [ -r "$ASDK_HOME/bin/setenv.sh" ]; then
+  . "$ASDK_HOME/bin/setenv.sh"
+fi
+$MAVEN_SH archetype:generate -DarchetypeGroupId=com.change_vision.astah -DarchetypeArtifactId=groovy-archetype-plugin -DarchetypeCatalog=file:///${M2_HOME}/repository/archetype-catalog.xml "$@"

@@ -3,10 +3,10 @@
 
   <property name="target" location="target"/>
   <property name="maven-binaries" location="maven-binary"/>
-  <property name="maven-dir-name" value="apache-maven-3.0.3"/>
+  <property name="maven-dir-name" value="apache-maven-3.0.4"/>
   <property name="based-maven-binaries" location="${maven-binaries}/${maven-dir-name}-bin.zip"/>
   <property name="artifact-name" value="astah-plugin-SDK"/>
-  <property name="version" value="1.0"/>
+  <property name="version" value="1.1-beta"/>
   <property name="complete-name" value="${artifact-name}-${version}"/>
   <property name="distbase" value="${target}/${complete-name}"/>
   <property name="bundles" location="${distbase}/bundles"/>
@@ -69,7 +69,7 @@
   </target>
 
   <target name="get_maven">
-    <get src="http://archive.apache.org/dist/maven/binaries/apache-maven-3.0.3-bin.zip" dest="maven-binary" skipexisting="true"/>
+    <get src="http://archive.apache.org/dist/maven/binaries/apache-maven-3.0.4-bin.zip" dest="maven-binary" skipexisting="true"/>
     <unzip src="${based-maven-binaries}" dest="${target}"/>
   </target>
 
@@ -106,6 +106,13 @@
     </antcall>
     <antcall target="build_plugin">
       <param name="working_dir" value="${target}/archetype"/>
+    </antcall>
+    <antcall target="checkout">
+      <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-plugin-groovy-archetype-plugin.git"/>
+      <param name="checkoutDir" value="${target}/groovy-archetype"/>
+    </antcall>
+    <antcall target="build_plugin">
+      <param name="working_dir" value="${target}/groovy-archetype"/>
     </antcall>
     <antcall target="copy_specific_resource">
       <param name="distdirname" value="repository"/>
