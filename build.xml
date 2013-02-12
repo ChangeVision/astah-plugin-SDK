@@ -148,6 +148,13 @@
     <delete dir="${java.io.tmpdir}/${artifact-name}/repository"/>
     <build_astah_maven_plugin version="1.0.0"/>
     <build_astah_maven_plugin version="0.9.3"/>
+    <checkout_with_tag
+      connectionUrl="svm:git:https://github.com/ChangeVision/astah-plugin-archetype-plugin.git"
+      checkoutDir="${target}/archetype"
+      tag="plugin-archetype-1.0.0"/>
+    <antcall target="build_plugin">
+      <param name="working" value="${target}/archetype"/>
+    </antcall>
     <checkout
       connectionUrl="svm:git:https://github.com/ChangeVision/astah-plugin-groovy-archetype-plugin.git"
       checkoutDir="${target}/groovy-archetype"/>
