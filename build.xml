@@ -21,6 +21,17 @@
     <os family="unix"/>
   </condition>
 
+  <macrodef name="mvn">
+    <attribute name="mvn.executable" default="${mvn.executable}"/>
+    <attribute name="argLine"/>
+    <attribute name="working"/>
+    <sequential>
+      <exec failonerror="true" executable="@{mvn.executable}" dir="@{working}">
+        <arg line="@{argLine}"/>
+      </exec>
+    </sequential>
+  </macrodef>
+
   <target name="clean">
      <delete dir="${target}"/>
   </target>
@@ -98,21 +109,21 @@
       <param name="checkoutDir" value="${target}/astah-maven-plugin"/>
     </antcall>
     <antcall target="build_plugin">
-      <param name="working_dir" value="${target}/astah-maven-plugin"/>
+      <param name="working" value="${target}/astah-maven-plugin"/>
     </antcall>
     <antcall target="checkout">
       <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-plugin-archetype-plugin.git"/>
       <param name="checkoutDir" value="${target}/archetype"/>
     </antcall>
     <antcall target="build_plugin">
-      <param name="working_dir" value="${target}/archetype"/>
+      <param name="working" value="${target}/archetype"/>
     </antcall>
     <antcall target="checkout">
       <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-plugin-groovy-archetype-plugin.git"/>
       <param name="checkoutDir" value="${target}/groovy-archetype"/>
     </antcall>
     <antcall target="build_plugin">
-      <param name="working_dir" value="${target}/groovy-archetype"/>
+      <param name="working" value="${target}/groovy-archetype"/>
     </antcall>
     <antcall target="copy_specific_resource">
       <param name="distdirname" value="repository"/>
@@ -132,7 +143,7 @@
     <mkdir dir="${bundles}"/>
     <antcall target="build_bundle_plugin">
       <param name="plugin_name" value="astah-console-plugin.git"/>
-      <param name="working_dir" value="${target}/astah-console-plugin.git"/>
+      <param name="working" value="${target}/astah-console-plugin.git"/>
     </antcall>
   </target>
 
@@ -141,20 +152,15 @@
       <param name="connectionUrl" value="scm:git:https://github.com/ChangeVision/astah-console-plugin.git/"/>
       <param name="checkoutDir" value="${target}/${plugin_name}"/>
     </antcall>
-    <antcall target="mvn">
-      <param name="argLine" value=" package"/>
-      <param name="working_dir" value="${working_dir}"/>
-    </antcall>
+    <mvn argLine=" package" working="${working}"/>
     <copy todir="${bundles}">
-      <fileset dir="${working_dir}/target/" includes="*.jar"/>
+      <fileset dir="${working}/target/" includes="*.jar"/>
     </copy>
   </target>
 
   <target name="build_plugin">
-    <antcall target="mvn">
-      <param name="argLine" value=" deploy -DaltDeploymentRepository=local::default::file://${java.io.tmpdir}/astah-plugin-SDK/repository"/>
-      <param name="working_dir" value="${working_dir}"/>
-    </antcall>
+    <mvn argLine=" deploy -DaltDeploymentRepository=local::default::file://${java.io.tmpdir}/astah-plugin-SDK/repository"
+    working="${working}"/>
   </target>
 
   <target name="make_example">
@@ -184,7 +190,7 @@
       <param name="checkoutDir" value="target/tutorial-${lang}"/>
     </antcall>
     <antcall target="run_sphinx">
-      <param name="working_dir" value="target/tutorial-${lang}" />
+      <param name="working" value="target/tutorial-${lang}" />
       <param name="command" value="html" />
     </antcall>
     <antcall target="copy_specific_resource">
@@ -195,31 +201,31 @@
 
   <target name="run_sphinx">
     <antcall target="run_sphinx_unix">
-      <param name="working_dir" value="${working_dir}"/>
+      <param name="working" value="${working}"/>
       <param name="command" value="${command}"/>
     </antcall>
     <antcall target="run_sphinx_windows">
-      <param name="working_dir" value="${working_dir}"/>
+      <param name="working" value="${working}"/>
       <param name="command" value="${command}" />
     </antcall>
   </target>
 
   <target name="run_sphinx_unix">
-    <exec executable="make" dir="${working_dir}" osfamily="unix">
+    <exec executable="make" dir="${working}" osfamily="unix">
       <arg value="clean"/>
     </exec>
-    <exec executable="make" dir="${working_dir}" osfamily="unix">
+    <exec executable="make" dir="${working}" osfamily="unix">
       <arg value="${command}"/>
     </exec>
   </target>
 
   <target name="run_sphinx_windows">
-    <exec executable="cmd" dir="${working_dir}" osfamily="windows">
+    <exec executable="cmd" dir="${working}" osfamily="windows">
       <arg value="/c"/>
       <arg value="make.bat"/>
       <arg value="clean"/>
     </exec>
-    <exec executable="cmd" dir="${working_dir}" osfamily="windows">
+    <exec executable="cmd" dir="${working}" osfamily="windows">
       <arg value="/c"/>
       <arg value="make.bat"/>
       <arg value="html"/>
@@ -231,17 +237,10 @@
   </target>
 
   <target name="checkout">
-    <antcall target="mvn">
-      <param name="argLine" value=" scm:checkout -DconnectionUrl=${connectionUrl} -DcheckoutDirectory=${checkoutDir}"/>
-      <param name="working_dir" value="."/>
-    </antcall>
+    <mvn argLine=" scm:checkout -DconnectionUrl=${connectionUrl} -DcheckoutDirectory=${checkoutDir}"
+    working="."/>
   </target>
 
-  <target name="mvn">
-    <exec failonerror="true" executable="${mvn.executable}" dir="${working_dir}">
-      <arg line="${argLine}"/>
-    </exec>
-  </target>
 
   <target name="copy_resource">
     <antcall target="copy_specific_resource">
