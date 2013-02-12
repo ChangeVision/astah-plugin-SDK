@@ -57,6 +57,19 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="build_astah_maven_plugin" description="build_astah_maven_plugin">
+    <attribute name="version"/>
+    <sequential>
+    <checkout_with_tag
+      connectionUrl="scm:git:https://github.com/ChangeVision/astah-maven-plugin.git"
+      checkoutDir="${target}/astah-maven-plugin-@{version}"
+      tag="astah-maven-plugin-@{version}"/>
+    <antcall target="build_plugin">
+      <param name="working" value="${target}/astah-maven-plugin-@{version}"/>
+    </antcall>
+    </sequential>
+  </macrodef>
+
   <macrodef name="dchmod">
     <attribute name="target"/>
     <attribute name="perm" default="744"/>
@@ -133,19 +146,8 @@
 
   <target name="make_repository">
     <delete dir="${java.io.tmpdir}/${artifact-name}/repository"/>
-    <checkout_with_tag
-      connectionUrl="scm:git:https://github.com/ChangeVision/astah-maven-plugin.git"
-      checkoutDir="${target}/astah-maven-plugin"
-      tag="${astah-maven-plugin-tag}"/>
-    <antcall target="build_plugin">
-      <param name="working" value="${target}/astah-maven-plugin"/>
-    </antcall>
-    <checkout
-      connectionUrl="svm:git:https://github.com/ChangeVision/astah-plugin-archetype-plugin.git"
-      checkoutDir="${target}/archetype"/>
-    <antcall target="build_plugin">
-      <param name="working" value="${target}/archetype"/>
-    </antcall>
+    <build_astah_maven_plugin version="1.0.0"/>
+    <build_astah_maven_plugin version="0.9.3"/>
     <checkout
       connectionUrl="svm:git:https://github.com/ChangeVision/astah-plugin-groovy-archetype-plugin.git"
       checkoutDir="${target}/groovy-archetype"/>
