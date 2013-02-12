@@ -10,10 +10,14 @@
   <property name="complete-name" value="${artifact-name}-${version}"/>
   <property name="distbase" value="${target}/${complete-name}"/>
   <property name="bundles" location="${distbase}/bundles"/>
+
+  <property name="astah-maven-plugin-tag" value="astah-maven-plugin-1.0.0"/>
+
   <tstamp>
     <format property="now" pattern="yyyyMMddHHmmss" />
   </tstamp>
-  <!-- Mavenの実行形式ファイル(Windowsのみバッチ) -->
+
+  <!-- Specify maven executable name -->
   <condition property="mvn.executable" value="mvn.bat">
     <os family="windows"/>
   </condition>
@@ -21,7 +25,7 @@
     <os family="unix"/>
   </condition>
 
-  <macrodef name="mvn">
+  <macrodef name="mvn" description="launch maven">
     <attribute name="mvn.executable" default="${mvn.executable}"/>
     <attribute name="argLine"/>
     <attribute name="working"/>
@@ -29,6 +33,35 @@
       <exec failonerror="true" executable="@{mvn.executable}" dir="@{working}">
         <arg line="@{argLine}"/>
       </exec>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="checkout" description="checkout specified source code">
+    <attribute name="connectionUrl"/>
+    <attribute name="checkoutDir"/>
+    <attribute name="working" default="."/>
+    <sequential>
+      <mvn argLine=" scm:checkout -DconnectionUrl=@{connectionUrl} -DcheckoutDirectory=@{checkoutDir}"
+        working="@{working}"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="checkout_with_tag" description="checkout specified source code with tag">
+    <attribute name="connectionUrl"/>
+    <attribute name="checkoutDir"/>
+    <attribute name="tag"/>
+    <attribute name="working" default="."/>
+    <sequential>
+      <mvn argLine=" scm:checkout -DconnectionUrl=@{connectionUrl} -DcheckoutDirectory=@{checkoutDir} -DscmVersionType=tag -DscmVersion=@{tag}"
+        working="@{working}"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="dchmod">
+    <attribute name="target"/>
+    <attribute name="perm" default="744"/>
+    <sequential>
+      <chmod file="@{target}" perm="@{perm}" type="both" verbose="true"/>
     </sequential>
   </macrodef>
 
@@ -63,18 +96,14 @@
     <echo file="${distbase}/CREATED" message="BUILD:${now}"/>
     <fixcrlf srcdir="${distbase}/bin" eol="lf"/>
     <fixcrlf srcdir="${distbase}/bin" includes="**/*.bat" eol="crlf"/>
-    <antcall target="chmod">
-      <param name="target" value="${distbase}/bin/*"/>
-      <param name="perm" value="766"/>
-    </antcall>
-    <antcall target="chmod">
-      <param name="target" value="${distbase}/bin/*.bat"/>
-      <param name="perm" value="666"/>
-    </antcall>
-    <antcall target="chmod">
-      <param name="target" value="${distbase}/bin/*.conf"/>
-      <param name="perm" value="666"/>
-    </antcall>
+    <dchmod target="${distbase}/bin/*"
+      perm="766"/>
+    <dchmod
+      target="${distbase}/bin/*.bat"
+      perm="666"/>
+    <dchmod
+      target="${distbase}/bin/*.conf"
+      perm="666"/>
     <antcall target="create_zip"/>
     <echo>end making zip</echo>
   </target>
@@ -104,24 +133,22 @@
 
   <target name="make_repository">
     <delete dir="${java.io.tmpdir}/${artifact-name}/repository"/>
-    <antcall target="checkout">
-      <param name="connectionUrl" value="scm:git:https://github.com/ChangeVision/astah-maven-plugin.git"/>
-      <param name="checkoutDir" value="${target}/astah-maven-plugin"/>
-    </antcall>
+    <checkout_with_tag
+      connectionUrl="scm:git:https://github.com/ChangeVision/astah-maven-plugin.git"
+      checkoutDir="${target}/astah-maven-plugin"
+      tag="${astah-maven-plugin-tag}"/>
     <antcall target="build_plugin">
       <param name="working" value="${target}/astah-maven-plugin"/>
     </antcall>
-    <antcall target="checkout">
-      <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-plugin-archetype-plugin.git"/>
-      <param name="checkoutDir" value="${target}/archetype"/>
-    </antcall>
+    <checkout
+      connectionUrl="svm:git:https://github.com/ChangeVision/astah-plugin-archetype-plugin.git"
+      checkoutDir="${target}/archetype"/>
     <antcall target="build_plugin">
       <param name="working" value="${target}/archetype"/>
     </antcall>
-    <antcall target="checkout">
-      <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-plugin-groovy-archetype-plugin.git"/>
-      <param name="checkoutDir" value="${target}/groovy-archetype"/>
-    </antcall>
+    <checkout
+      connectionUrl="svm:git:https://github.com/ChangeVision/astah-plugin-groovy-archetype-plugin.git"
+      checkoutDir="${target}/groovy-archetype"/>
     <antcall target="build_plugin">
       <param name="working" value="${target}/groovy-archetype"/>
     </antcall>
@@ -148,10 +175,9 @@
   </target>
 
   <target name="build_bundle_plugin">
-    <antcall target="checkout">
-      <param name="connectionUrl" value="scm:git:https://github.com/ChangeVision/astah-console-plugin.git/"/>
-      <param name="checkoutDir" value="${target}/${plugin_name}"/>
-    </antcall>
+    <checkout
+      connectionUrl="scm:git:https://github.com/ChangeVision/astah-console-plugin.git/"
+      checkoutDir="${target}/${plugin_name}"/>
     <mvn argLine=" package" working="${working}"/>
     <copy todir="${bundles}">
       <fileset dir="${working}/target/" includes="*.jar"/>
@@ -165,14 +191,12 @@
 
   <target name="make_example">
     <mkdir dir="${distbase}/examples" />
-    <antcall target="checkout">
-      <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-example-plugin.git"/>
-      <param name="checkoutDir" value="${distbase}/examples/tutorialsample"/>
-    </antcall>
-    <antcall target="checkout">
-      <param name="connectionUrl" value="svm:git:https://github.com/ChangeVision/astah-drag_and_drop_example-plugin.git"/>
-      <param name="checkoutDir" value="${distbase}/examples/drag_and_drop_sample"/>
-    </antcall>
+    <checkout
+      connectionUrl="svm:git:https://github.com/ChangeVision/astah-example-plugin.git"
+      checkoutDir="${distbase}/examples/tutorialsample"/>
+    <checkout
+      connectionUrl="svm:git:https://github.com/ChangeVision/astah-drag_and_drop_example-plugin.git"
+      checkoutDir="${distbase}/examples/drag_and_drop_sample"/>
   </target>
 
   <target name="make_tutorials" description="create tutorials html">
@@ -185,10 +209,9 @@
   </target>
 
   <target name="make_tutorial">
-    <antcall target="checkout">
-      <param name="connectionUrl" value="scm:git:https://github.com/ChangeVision/astah-plugin-tutorial-${lang}.git/"/>
-      <param name="checkoutDir" value="target/tutorial-${lang}"/>
-    </antcall>
+    <checkout
+      connectionUrl="scm:git:https://github.com/ChangeVision/astah-plugin-tutorial-${lang}.git/"
+      checkoutDir="target/tutorial-${lang}"/>
     <antcall target="run_sphinx">
       <param name="working" value="target/tutorial-${lang}" />
       <param name="command" value="html" />
@@ -231,16 +254,6 @@
       <arg value="html"/>
     </exec>
   </target>
-
-  <target name="chmod">
-      <chmod file="${target}" perm="${perm}" type="both" verbose="true"/>
-  </target>
-
-  <target name="checkout">
-    <mvn argLine=" scm:checkout -DconnectionUrl=${connectionUrl} -DcheckoutDirectory=${checkoutDir}"
-    working="."/>
-  </target>
-
 
   <target name="copy_resource">
     <antcall target="copy_specific_resource">
