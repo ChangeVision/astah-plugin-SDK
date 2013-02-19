@@ -2,3 +2,4 @@ maven-binary/*
 target/*
 javadoc
 **/*/build
+!bin

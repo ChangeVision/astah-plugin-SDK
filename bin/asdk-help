@@ -18,4 +18,4 @@ PRGDIR=`dirname "$PRG"`
 if [ -r "$ASDK_HOME/bin/setenv.sh" ]; then
   . "$ASDK_HOME/bin/setenv.sh"
 fi
-$MAVEN_SH $ASTAH_MAVEN_PLUGIN:debug "$@"
+$MAVEN_SH  $ASTAH_MAVEN_PLUGIN:help "$@"
