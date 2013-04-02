@@ -343,7 +343,7 @@ under the License.
       <activation>
         <activeByDefault>false</activeByDefault>
         <file>
-          <exists>C:/Program Files/astah-communityastah-community.jar</exists>
+          <exists>C:/Program Files/astah-community/astah-community.jar</exists>
         </file>
       </activation>
       <properties>
