@@ -339,6 +339,34 @@ under the License.
     </profile>
 
     <profile>
+      <id>astah-sysml-windows-x86</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>C:/Program Files (x86)/astah-sysml/astah-sys.jar</exists>
+        </file>
+      </activation>
+      <properties>
+        <astahPath>C:/Program Files (x86)/astah-sysml</astahPath>
+        <astahEdition>sysml</astahEdition>
+      </properties>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>local_astah_repository</id>
+          <name>Local Astah* Plugin Repository</name>
+          <url>file://${env.M2_HOME}/repository/</url>
+          <layout>default</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+    <profile>
       <id>astah-community-windows</id>
       <activation>
         <activeByDefault>false</activeByDefault>
@@ -405,6 +433,34 @@ under the License.
       <properties>
         <astahPath>C:/Program Files/astah-professional</astahPath>
         <astahEdition>professional</astahEdition>
+      </properties>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>local_astah_repository</id>
+          <name>Local Astah* Plugin Repository</name>
+          <url>file://${env.M2_HOME}/repository/</url>
+          <layout>default</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+    <profile>
+      <id>astah-sysml-windows</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>C:/Program Files/astah-sysml/astah-sys.jar</exists>
+        </file>
+      </activation>
+      <properties>
+        <astahPath>C:/Program Files/astah-sysml</astahPath>
+        <astahEdition>sysml</astahEdition>
       </properties>
       <pluginRepositories>
         <pluginRepository>
@@ -589,6 +645,34 @@ under the License.
         </pluginRepository>
       </pluginRepositories>
     </profile>
+    
+    <profile>
+      <id>astah-sysml-macosx</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>/Applications/astah sysml/astah sysml.app/Contents/Java/astah-sys.jar</exists>
+        </file>
+      </activation>
+      <properties>
+        <astahPath>/Applications/astah sysml/astah sysml.app/Contents/Java</astahPath>
+        <astahEdition>sysml</astahEdition>
+      </properties>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>local_astah_repository</id>
+          <name>Local Astah* Plugin Repository</name>
+          <url>file://${env.M2_HOME}/repository/</url>
+          <layout>default</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
 
     <profile>
       <id>astah-community-linux</id>
@@ -673,7 +757,34 @@ under the License.
         </pluginRepository>
       </pluginRepositories>
     </profile>
-
+    
+    <profile>
+      <id>astah-sysml-linux</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>/usr/lib/astah_sysml/astah-sys.jar</exists>
+        </file>
+      </activation>
+      <properties>
+        <astahPath>/usr/lib/astah_sysml</astahPath>
+        <astahEdition>sysml</astahEdition>
+      </properties>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>local_astah_repository</id>
+          <name>Local Astah* Plugin Repository</name>
+          <url>file://${env.M2_HOME}/repository/</url>
+          <layout>default</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
 
   </profiles>
 
