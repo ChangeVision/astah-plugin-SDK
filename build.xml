@@ -146,7 +146,8 @@
 
   <target name="make_repository">
     <delete dir="${java.io.tmpdir}/${artifact-name}/repository"/>
-    <build_astah_maven_plugin version="1.0.0"/>
+    <build_astah_maven_plugin version="1.0.1"/>
+  	<build_astah_maven_plugin version="1.0.0"/>
     <build_astah_maven_plugin version="0.9.3"/>
     <checkout_with_tag
       connectionUrl="svm:git:https://github.com/ChangeVision/astah-plugin-archetype-plugin.git"
