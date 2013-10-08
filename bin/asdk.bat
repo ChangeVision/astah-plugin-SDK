@@ -1,2 +1,2 @@
 @echo off
-echo astah* Plug-in SDK version: 1.1
+echo astah* Plug-in SDK version: 1.2 beta
