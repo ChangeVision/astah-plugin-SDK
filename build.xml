@@ -162,6 +162,12 @@
     <antcall target="build_plugin">
       <param name="working" value="${target}/groovy-archetype"/>
     </antcall>
+    <checkout
+      connectionUrl="svm:git:https://github.com/ChangeVision/astah-sysml-plugin-archetype-plugin.git"
+      checkoutDir="${target}/sysml-archetype"/>
+    <antcall target="build_plugin">
+      <param name="working" value="${target}/sysml-archetype"/>
+    </antcall>
     <antcall target="copy_specific_resource">
       <param name="distdirname" value="repository"/>
       <param name="srcdirname" value="${java.io.tmpdir}/${artifact-name}/repository"/>
