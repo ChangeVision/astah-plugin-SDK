@@ -6,7 +6,7 @@
   <property name="maven-dir-name" value="apache-maven-3.0.4"/>
   <property name="based-maven-binaries" location="${maven-binaries}/${maven-dir-name}-bin.zip"/>
   <property name="artifact-name" value="astah-plugin-SDK"/>
-  <property name="version" value="1.2-beta"/>
+  <property name="version" value="1.2"/>
   <property name="complete-name" value="${artifact-name}-${version}"/>
   <property name="distbase" value="${target}/${complete-name}"/>
   <property name="bundles" location="${distbase}/bundles"/>
