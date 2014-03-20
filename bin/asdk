@@ -1,2 +1,2 @@
 #!/bin/sh
-echo "astah* Plug-in SDK version: 1.2"
+echo "astah* Plug-in SDK version: @build.version.name@"
