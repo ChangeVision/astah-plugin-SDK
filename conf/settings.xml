@@ -367,6 +367,34 @@ under the License.
     </profile>
 
     <profile>
+      <id>astah-gsn-windows-x86</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>C:/Program Files (x86)/astah-gsn/astah-gsn.jar</exists>
+        </file>
+      </activation>
+      <properties>
+        <astahPath>C:/Program Files (x86)/astah-gsn</astahPath>
+        <astahEdition>gsn</astahEdition>
+      </properties>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>local_astah_repository</id>
+          <name>Local Astah* Plugin Repository</name>
+          <url>file://${env.M2_HOME}/repository/</url>
+          <layout>default</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+    <profile>
       <id>astah-community-windows</id>
       <activation>
         <activeByDefault>false</activeByDefault>
@@ -461,6 +489,34 @@ under the License.
       <properties>
         <astahPath>C:/Program Files/astah-sysml</astahPath>
         <astahEdition>sysml</astahEdition>
+      </properties>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>local_astah_repository</id>
+          <name>Local Astah* Plugin Repository</name>
+          <url>file://${env.M2_HOME}/repository/</url>
+          <layout>default</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+    <profile>
+      <id>astah-gsn-windows</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>C:/Program Files/astah-gsn/astah-gsn.jar</exists>
+        </file>
+      </activation>
+      <properties>
+        <astahPath>C:/Program Files/astah-gsn</astahPath>
+        <astahEdition>gsn</astahEdition>
       </properties>
       <pluginRepositories>
         <pluginRepository>
@@ -675,6 +731,34 @@ under the License.
     </profile>
 
     <profile>
+      <id>astah-gsn-macosx</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>/Applications/astah gsn/astah gsn.app/Contents/Java/astah-gsn.jar</exists>
+        </file>
+      </activation>
+      <properties>
+        <astahPath>/Applications/astah gsn/astah gsn.app/Contents/Java</astahPath>
+        <astahEdition>gsn</astahEdition>
+      </properties>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>local_astah_repository</id>
+          <name>Local Astah* Plugin Repository</name>
+          <url>file://${env.M2_HOME}/repository/</url>
+          <layout>default</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+    
+    <profile>
       <id>astah-community-linux</id>
       <activation>
         <activeByDefault>false</activeByDefault>
@@ -769,6 +853,34 @@ under the License.
       <properties>
         <astahPath>/usr/lib/astah_sysml</astahPath>
         <astahEdition>sysml</astahEdition>
+      </properties>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>local_astah_repository</id>
+          <name>Local Astah* Plugin Repository</name>
+          <url>file://${env.M2_HOME}/repository/</url>
+          <layout>default</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+    <profile>
+      <id>astah-gsn-linux</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <file>
+          <exists>/usr/lib/astah_gsn/astah-gsn.jar</exists>
+        </file>
+      </activation>
+      <properties>
+        <astahPath>/usr/lib/astah_gsn</astahPath>
+        <astahEdition>gsn</astahEdition>
       </properties>
       <pluginRepositories>
         <pluginRepository>

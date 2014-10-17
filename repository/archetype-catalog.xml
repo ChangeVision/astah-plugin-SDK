@@ -21,5 +21,11 @@
       <version>1.0.0</version>
       <description>Astah Sysml Plug-in Template Project</description>
     </archetype>
+    <archetype>
+      <groupId>com.change_vision.astah</groupId>
+      <artifactId>gsn-plugin-archetype</artifactId>
+      <version>1.0.0</version>
+      <description>Astah GSN Plug-in Template Project</description>
+    </archetype>
   </archetypes>
 </archetype-catalog>

@@ -57,13 +57,24 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="checkout_with_branch" description="checkout specified source code with branch">
+    <attribute name="connectionUrl"/>
+    <attribute name="checkoutDir"/>
+    <attribute name="branch"/>
+    <attribute name="working" default="."/>
+    <sequential>
+      <mvn argLine=" scm:checkout -DconnectionUrl=@{connectionUrl} -DcheckoutDirectory=@{checkoutDir} -DscmVersionType=branch -DscmVersion=@{branch}"
+        working="@{working}"/>
+    </sequential>
+  </macrodef>
+
   <macrodef name="build_astah_maven_plugin" description="build_astah_maven_plugin">
     <attribute name="version"/>
     <sequential>
-    <checkout_with_tag
+    <checkout_with_branch
       connectionUrl="scm:git:https://github.com/ChangeVision/astah-maven-plugin.git"
       checkoutDir="${target}/astah-maven-plugin-@{version}"
-      tag="astah-maven-plugin-@{version}"/>
+      branch="add_gsn_edition"/>
     <antcall target="build_plugin">
       <param name="working" value="${target}/astah-maven-plugin-@{version}"/>
     </antcall>
@@ -168,6 +179,12 @@
     <antcall target="build_plugin">
       <param name="working" value="${target}/sysml-archetype"/>
     </antcall>
+    <checkout
+      connectionUrl="svm:git:https://github.com/ChangeVision/astah-gsn-plugin-archetype-plugin.git"
+      checkoutDir="${target}/gsn-archetype"/>
+    <antcall target="build_plugin">
+      <param name="working" value="${target}/gsn-archetype"/>
+    </antcall>
     <antcall target="copy_specific_resource">
       <param name="distdirname" value="repository"/>
       <param name="srcdirname" value="${java.io.tmpdir}/${artifact-name}/repository"/>
@@ -182,6 +199,7 @@
     </antcall>
   </target>
 
+  
   <target name="make_bundle_plugins" description="build bundle plugins for developer">
     <mkdir dir="${bundles}"/>
     <antcall target="build_bundle_plugin">
@@ -189,7 +207,7 @@
       <param name="working" value="${target}/astah-console-plugin.git"/>
     </antcall>
   </target>
-
+  
   <target name="build_bundle_plugin">
     <checkout
       connectionUrl="scm:git:https://github.com/ChangeVision/astah-console-plugin.git/"
@@ -199,7 +217,7 @@
       <fileset dir="${working}/target/" includes="*.jar"/>
     </copy>
   </target>
-
+  
   <target name="build_plugin">
     <mvn argLine=" deploy -DaltDeploymentRepository=local::default::file://${java.io.tmpdir}/astah-plugin-SDK/repository"
     working="${working}"/>
