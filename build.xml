@@ -39,9 +39,10 @@
   <macrodef name="checkout" description="checkout specified source code">
     <attribute name="connectionUrl"/>
     <attribute name="checkoutDir"/>
+    <attribute name="branch" default="master"/>
     <attribute name="working" default="."/>
     <sequential>
-      <mvn argLine=" scm:checkout -DconnectionUrl=@{connectionUrl} -DcheckoutDirectory=@{checkoutDir}"
+      <mvn argLine=" scm:checkout -DconnectionUrl=@{connectionUrl} -DcheckoutDirectory=@{checkoutDir} -DscmVersion=@{branch} -DscmVersionType=branch"
         working="@{working}"/>
     </sequential>
   </macrodef>
