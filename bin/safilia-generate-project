@@ -1,0 +1,21 @@
+#!/bin/sh
+# resolve links - $0 may be a softlink
+PRG="$0"
+
+while [ -h "$PRG" ]; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+
+# Get standard environment variables
+PRGDIR=`dirname "$PRG"`
+[ -z "$SSDK_HOME" ] && SSDK_HOME=`cd "$PRGDIR/.." >/dev/null; pwd`
+if [ -r "$SSDK_HOME/bin/setenv.sh" ]; then
+  . "$SSDK_HOME/bin/setenv.sh"
+fi
+$MAVEN_SH archetype:generate -DarchetypeGroupId=com.change_vision -DarchetypeArtifactId=safilia-plugin-archetype -DarchetypeCatalog=file:///${M2_HOME}/repository/archetype-catalog.xml "$@"

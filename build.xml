@@ -5,8 +5,8 @@
   <property name="maven-binaries" location="maven-binary"/>
   <property name="maven-dir-name" value="apache-maven-3.0.4"/>
   <property name="based-maven-binaries" location="${maven-binaries}/${maven-dir-name}-bin.zip"/>
-  <property name="artifact-name" value="astah-plugin-SDK"/>
-  <property name="version" value="1.2"/>
+  <property name="artifact-name" value="safilia-plugin-SDK"/>
+  <property name="version" value="1.0"/>
   <property name="complete-name" value="${artifact-name}-${version}"/>
   <property name="distbase" value="${target}/${complete-name}"/>
   <property name="bundles" location="${distbase}/bundles"/>
@@ -57,15 +57,26 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="checkout_with_branch" description="checkout specified source code with branch">
+    <attribute name="connectionUrl"/>
+    <attribute name="checkoutDir"/>
+    <attribute name="branch"/>
+    <attribute name="working" default="."/>
+    <sequential>
+      <mvn argLine=" scm:checkout -DconnectionUrl=@{connectionUrl} -DcheckoutDirectory=@{checkoutDir} -DscmVersionType=branch -DscmVersion=@{branch}"
+        working="@{working}"/>
+    </sequential>
+  </macrodef>
+
   <macrodef name="build_astah_maven_plugin" description="build_astah_maven_plugin">
     <attribute name="version"/>
     <sequential>
-    <checkout_with_tag
+    <checkout_with_branch
       connectionUrl="scm:git:https://github.com/ChangeVision/astah-maven-plugin.git"
-      checkoutDir="${target}/astah-maven-plugin-@{version}"
-      tag="astah-maven-plugin-@{version}"/>
+      checkoutDir="${target}/safilia-maven-plugin-@{version}"
+      branch="add_safilia_edition"/>
     <antcall target="build_plugin">
-      <param name="working" value="${target}/astah-maven-plugin-@{version}"/>
+      <param name="working" value="${target}/safilia-maven-plugin-@{version}"/>
     </antcall>
     </sequential>
   </macrodef>
@@ -146,27 +157,12 @@
 
   <target name="make_repository">
     <delete dir="${java.io.tmpdir}/${artifact-name}/repository"/>
-    <build_astah_maven_plugin version="1.0.1"/>
     <build_astah_maven_plugin version="1.0.0"/>
-    <build_astah_maven_plugin version="0.9.3"/>
-    <checkout_with_tag
-      connectionUrl="svm:git:https://github.com/ChangeVision/astah-plugin-archetype-plugin.git"
-      checkoutDir="${target}/archetype"
-      tag="plugin-archetype-1.0.0"/>
-    <antcall target="build_plugin">
-      <param name="working" value="${target}/archetype"/>
-    </antcall>
     <checkout
-      connectionUrl="svm:git:https://github.com/ChangeVision/astah-plugin-groovy-archetype-plugin.git"
-      checkoutDir="${target}/groovy-archetype"/>
+      connectionUrl="svm:git:https://github.com/ChangeVision/safilia-plugin-archetype-plugin.git"
+      checkoutDir="${target}/safilia-archetype"/>
     <antcall target="build_plugin">
-      <param name="working" value="${target}/groovy-archetype"/>
-    </antcall>
-    <checkout
-      connectionUrl="svm:git:https://github.com/ChangeVision/astah-sysml-plugin-archetype-plugin.git"
-      checkoutDir="${target}/sysml-archetype"/>
-    <antcall target="build_plugin">
-      <param name="working" value="${target}/sysml-archetype"/>
+      <param name="working" value="${target}/safilia-archetype"/>
     </antcall>
     <antcall target="copy_specific_resource">
       <param name="distdirname" value="repository"/>
@@ -182,26 +178,28 @@
     </antcall>
   </target>
 
+  
   <target name="make_bundle_plugins" description="build bundle plugins for developer">
     <mkdir dir="${bundles}"/>
     <antcall target="build_bundle_plugin">
-      <param name="plugin_name" value="astah-console-plugin.git"/>
-      <param name="working" value="${target}/astah-console-plugin.git"/>
+      <param name="plugin_name" value="safilia-console-plugin.git"/>
+      <param name="working" value="${target}/safilia-console-plugin.git"/>
     </antcall>
   </target>
-
+  
   <target name="build_bundle_plugin">
-    <checkout
+    <checkout_with_branch
       connectionUrl="scm:git:https://github.com/ChangeVision/astah-console-plugin.git/"
-      checkoutDir="${target}/${plugin_name}"/>
+      checkoutDir="${target}/${plugin_name}"
+      branch="add_safilia_edition"/>
     <mvn argLine=" package" working="${working}"/>
     <copy todir="${bundles}">
       <fileset dir="${working}/target/" includes="*.jar"/>
     </copy>
   </target>
-
+  
   <target name="build_plugin">
-    <mvn argLine=" deploy -DaltDeploymentRepository=local::default::file://${java.io.tmpdir}/astah-plugin-SDK/repository"
+    <mvn argLine=" deploy -DaltDeploymentRepository=local::default::file://${java.io.tmpdir}/${artifact-name}/repository"
     working="${working}"/>
   </target>
 
@@ -283,9 +281,6 @@
       <fileset dir="${srcdirname}">
         <include name="**/**"/>
       </fileset>
-      <filterset>
-        <filter token="build.version.name" value="${version}" />
-      </filterset>
     </copy>
   </target>
 </project>

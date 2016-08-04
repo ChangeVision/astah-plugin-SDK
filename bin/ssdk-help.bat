@@ -3,5 +3,5 @@ setlocal
 
 call %~dp0setenv.bat
 
-%MAVEN_BAT% %ASTAH_MAVEN_PLUGIN%:debug %*
+%MAVEN_BAT% %SAFILIA_MAVEN_PLUGIN%:help %*
 endlocal

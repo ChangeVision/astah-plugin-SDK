@@ -4,22 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <archetypes>
     <archetype>
-      <groupId>com.change_vision.astah</groupId>
-      <artifactId>plugin-archetype</artifactId>
+      <groupId>com.change_vision</groupId>
+      <artifactId>safilia-plugin-archetype</artifactId>
       <version>1.0.0</version>
-      <description>Astah Plug-in Template Project</description>
-    </archetype>
-    <archetype>
-      <groupId>com.change_vision.astah</groupId>
-      <artifactId>groovy-archetype-plugin</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
-      <description>Create astah* Plug-in groovy project</description>
-    </archetype>
-    <archetype>
-      <groupId>com.change_vision.astah</groupId>
-      <artifactId>sysml-plugin-archetype</artifactId>
-      <version>1.0.0</version>
-      <description>Astah Sysml Plug-in Template Project</description>
+      <description>Safilia Plug-in Template Project</description>
     </archetype>
   </archetypes>
 </archetype-catalog>

@@ -74,7 +74,7 @@ echo.
 goto error
 
 :chkMHome
-SET "M2_HOME=%ASDK_HOME%"
+SET "M2_HOME=%SSDK_HOME%"
 if not "%M2_HOME%"=="" goto valMHome
 
 if "%OS%"=="Windows_NT" SET "M2_HOME=%~dp0.."
@@ -96,7 +96,7 @@ set "M2_HOME=%M2_HOME:~0,-1%"
 goto stripMHome
 
 :checkMBat
-if exist "%M2_HOME%\bin\astah-mvn.bat" goto init
+if exist "%M2_HOME%\bin\safilia-mvn.bat" goto init
 
 echo.
 echo ERROR: M2_HOME is set to an invalid directory.
