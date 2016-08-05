@@ -104,7 +104,7 @@
         <include name="mvn*"/>
       </fileset>
     </delete>
-    <antcall target="copy_resource">
+    <antcall target="copy_resource_with_filterset">
       <param name="dirname" value="bin"/>
     </antcall>
     <antcall target="copy_resource">
@@ -281,6 +281,24 @@
       <fileset dir="${srcdirname}">
         <include name="**/**"/>
       </fileset>
+    </copy>
+  </target>
+
+  <target name="copy_resource_with_filterset">
+    <antcall target="copy_specific_resource_with_filterset">
+      <param name="srcdirname" value="${dirname}"/>
+      <param name="distdirname" value="${dirname}"/>
+    </antcall>
+  </target>
+
+  <target name="copy_specific_resource_with_filterset">
+    <copy todir="${distbase}/${distdirname}" overwrite="true">
+      <fileset dir="${srcdirname}">
+        <include name="**/**"/>
+      </fileset>
+      <filterset>
+        <filter token="build.version.name" value="${version}" />
+      </filterset>
     </copy>
   </target>
 </project>
