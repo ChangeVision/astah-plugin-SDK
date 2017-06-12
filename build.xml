@@ -6,7 +6,7 @@
   <property name="maven-dir-name" value="apache-maven-3.0.4"/>
   <property name="based-maven-binaries" location="${maven-binaries}/${maven-dir-name}-bin.zip"/>
   <property name="artifact-name" value="astah-plugin-SDK"/>
-  <property name="version" value="1.2"/>
+  <property name="version" value="1.3"/>
   <property name="complete-name" value="${artifact-name}-${version}"/>
   <property name="distbase" value="${target}/${complete-name}"/>
   <property name="bundles" location="${distbase}/bundles"/>
@@ -168,7 +168,7 @@
     <antcall target="build_plugin">
       <param name="working" value="${target}/sysml-archetype"/>
     </antcall>
-    <antcall target="copy_specific_resource">
+    <antcall target="copy_specific_repository_resource">
       <param name="distdirname" value="repository"/>
       <param name="srcdirname" value="${java.io.tmpdir}/${artifact-name}/repository"/>
     </antcall>
@@ -177,7 +177,7 @@
         <include name="*.asta"/>
       </fileset>
     </copy>
-    <antcall target="copy_resource">
+    <antcall target="copy_repository_resource">
       <param name="dirname" value="repository"/>
     </antcall>
   </target>
@@ -288,4 +288,20 @@
       </filterset>
     </copy>
   </target>
+
+  <target name="copy_repository_resource">
+    <antcall target="copy_specific_repository_resource">
+      <param name="srcdirname" value="${dirname}"/>
+      <param name="distdirname" value="${dirname}"/>
+    </antcall>
+  </target>
+
+  <target name="copy_specific_repository_resource">
+    <copy todir="${distbase}/${distdirname}" overwrite="true">
+      <fileset dir="${srcdirname}">
+        <include name="**/**"/>
+      </fileset>
+    </copy>
+  </target>
+	
 </project>
