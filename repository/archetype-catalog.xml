@@ -6,7 +6,7 @@
     <archetype>
       <groupId>com.change_vision.astah</groupId>
       <artifactId>plugin-archetype</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
       <description>Astah Plug-in Template Project</description>
     </archetype>
     <archetype>
@@ -18,7 +18,7 @@
     <archetype>
       <groupId>com.change_vision.astah</groupId>
       <artifactId>sysml-plugin-archetype</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
       <description>Astah Sysml Plug-in Template Project</description>
     </archetype>
   </archetypes>
