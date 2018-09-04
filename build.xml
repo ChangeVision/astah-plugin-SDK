@@ -6,12 +6,12 @@
   <property name="maven-dir-name" value="apache-maven-3.0.4"/>
   <property name="based-maven-binaries" location="${maven-binaries}/${maven-dir-name}-bin.zip"/>
   <property name="artifact-name" value="astah-plugin-SDK"/>
-  <property name="version" value="1.4"/>
+  <property name="version" value="1.5"/>
   <property name="complete-name" value="${artifact-name}-${version}"/>
   <property name="distbase" value="${target}/${complete-name}"/>
   <property name="bundles" location="${distbase}/bundles"/>
 
-  <property name="astah-maven-plugin-tag" value="astah-maven-plugin-1.0.1"/>
+  <property name="astah-maven-plugin-tag" value="astah-maven-plugin-1.0.2"/>
 
   <tstamp>
     <format property="now" pattern="yyyyMMddHHmmss" />
@@ -145,6 +145,7 @@
 
   <target name="make_repository">
     <delete dir="${java.io.tmpdir}/${artifact-name}/repository"/>
+    <build_astah_maven_plugin version="1.0.2"/>
     <build_astah_maven_plugin version="1.0.1"/>
     <build_astah_maven_plugin version="1.0.0"/>
     <build_astah_maven_plugin version="0.9.3"/>
