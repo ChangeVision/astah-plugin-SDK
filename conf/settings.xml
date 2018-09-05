@@ -253,7 +253,7 @@ under the License.
      | NOTE: These profile settings are overrided from last active profile.
      |
     -->
-
+  <!--
     <profile>
       <id>astah-community-windows-x86</id>
       <activation>
@@ -421,7 +421,7 @@ under the License.
         </pluginRepository>
       </pluginRepositories>
     </profile>
-
+  -->
     <profile>
       <id>astah-professional-windows</id>
       <activation>
@@ -449,7 +449,7 @@ under the License.
         </pluginRepository>
       </pluginRepositories>
     </profile>
-
+  <!--
     <profile>
       <id>astah-sysml-windows</id>
       <activation>
@@ -785,7 +785,7 @@ under the License.
         </pluginRepository>
       </pluginRepositories>
     </profile>
-
+  -->
   </profiles>
 
   <!-- activeProfiles
